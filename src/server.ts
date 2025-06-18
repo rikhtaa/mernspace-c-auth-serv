@@ -1,5 +1,5 @@
 function wel(name: string) {
-  return name;
+  console.log( name);
 }
 
 wel("sdf");
