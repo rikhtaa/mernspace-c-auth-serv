@@ -1,5 +1,5 @@
-function wel (name: string){
-  return name
+function wel(name: string) {
+  return name;
 }
 
-wel('sdf')
+wel("sdf");
