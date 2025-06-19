@@ -1,12 +1,5 @@
 function wel(name: string) {
-    console.log(name)
-
-    const user = {
-        name: 'Rekhta',
-    }
-
-    const fname = user.name
-    return name + fname
+    return name
 }
 
 wel('sdf')
