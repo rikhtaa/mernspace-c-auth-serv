@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
-   tseslint.configs.recommendedTypeChecked,
+   tseslint.configs.recommendedTypeChecked, 
    {
     ignores:['dist', 'node_modules', 'eslint.config.mjs']
    },
@@ -15,6 +15,9 @@ export default tseslint.config(
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      'dot-notation':'error',
     },
   },
   
