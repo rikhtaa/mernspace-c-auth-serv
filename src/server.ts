@@ -1,5 +1,3 @@
-function wel(name: string) {
-    return name
-}
+import { Config } from './config'
 
-wel('sdf')
+console.log(Config.PORT)
