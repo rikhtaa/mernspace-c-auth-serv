@@ -1,12 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express'
-import createHttpError, { HttpError } from 'http-errors'
+import { HttpError } from 'http-errors'
 import logger from './config/logger'
 
 const app = express()
 
-app.get('/', (req, res, next) => {
-    const err = createHttpError(401, 'You can not rrrrrr this coute')
-    next(err)
+app.get('/', (req, res) => {
     // throw err
     res.send('Welcome to auth service')
 })
