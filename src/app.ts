@@ -4,7 +4,7 @@ import { HttpError } from 'http-errors'
 import logger from './config/logger'
 import authRouter from './routes/auth'
 const app = express()
-
+app.use(express.json())
 app.get('/', (req, res) => {
     // throw err
     res.send('Welcome to auth service')
