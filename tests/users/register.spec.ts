@@ -3,6 +3,7 @@ import app from '../../src/app'
 import { DataSource } from 'typeorm'
 import { AppDataSource } from '../../src/config/data-source'
 import { User } from '../../src/entity/User'
+import { Roles } from '../../src/constants'
 describe('POST /auth/register', () => {
     describe('Given all fields', () => {
         let connection: DataSource
@@ -108,6 +109,48 @@ describe('POST /auth/register', () => {
             const users = await userRepository.find()
             expect(users[0]).toHaveProperty('role')
             expect(users[0].role).toBe('customer')
+        })
+        it('should store the hashed password in the database', async () => {
+            //Arrange
+            const userData = {
+                firstName: 'Rikhta',
+                lastName: 'K',
+                email: 'rikhta@gmail.com',
+                password: 'secret',
+            }
+
+            //Act
+            await request(app).post('/auth/register').send(userData)
+
+            //Assert
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            console.log(users[0].password)
+            expect(users[0].password).not.toBe(userData.password)
+            expect(users[0].password).toHaveLength(60)
+            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+        })
+        it('should return 400 status code if email is already exists', async () => {
+            //Arrange
+            const userData = {
+                firstName: 'Rikhta',
+                lastName: 'K',
+                email: 'rikhta@gmail.com',
+                password: 'secret',
+            }
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({ ...userData, role: Roles.CUSTOMER })
+
+            //Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+            const users = await userRepository.find()
+
+            //Assert
+            expect(response.statusCode).toBe(400)
+            expect(users).toHaveLength(1)
         })
     })
     describe('Fields are  missing', () => {})
