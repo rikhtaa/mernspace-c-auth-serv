@@ -7,7 +7,7 @@ import { User } from '../../src/entity/User'
 describe('POST /auth/register', () => {
     describe('Given all fields', () => {
         let connection: DataSource
-        //to connect the connection to Db jest hoodks can be used
+        //to connect the connection to Db jest hooks can be used
         //beforeAll will run before all tests
         beforeAll(async () => {
             connection = await AppDataSource.initialize()
@@ -74,6 +74,22 @@ describe('POST /auth/register', () => {
             expect(users[0].firstName).toBe(userData.firstName)
             expect(users[0].lastName).toBe(userData.lastName)
             expect(users[0].email).toBe(userData.email)
+        })
+        it('should return the id of the created user', async () => {
+            const userData = {
+                id: 124,
+                firstName: 'Rikhta',
+                lastName: 'K',
+                email: 'rikhta@gmail.com',
+                password: 'secret',
+            }
+
+            await request(app).post('/auth/register').send(userData)
+
+            //Assert
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            expect(users[0].id).toBeDefined()
         })
     })
     describe('Fields are  missing', () => {})
