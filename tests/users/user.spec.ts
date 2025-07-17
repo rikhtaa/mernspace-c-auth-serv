@@ -92,5 +92,24 @@ describe('POST /auth/Login', () => {
                 'password',
             )
         })
+        it('should  return 401 status code if token doesnt exists', async () => {
+            //Register user
+            const userData = {
+                firstName: 'Rikhta',
+                lastName: 'K',
+                email: 'rikhta@gmail.com',
+                password: 'secretPassword',
+            }
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            })
+
+            //Add token to cookie
+            const response = await request(app).get('/auth/self').send()
+            //Assert
+            expect(response.statusCode).toBe(401)
+        })
     })
 })
