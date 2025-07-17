@@ -12,7 +12,7 @@ describe('POST /auth/Login', () => {
     beforeAll(async () => {
         jwks = createJWKSMock('http://localhost:5501')
         connection = await AppDataSource.initialize()
-    })
+    }, 10000)
 
     beforeEach(async () => {
         jwks.start()
@@ -62,6 +62,35 @@ describe('POST /auth/Login', () => {
             //Assert
             //Check if user id matches with registered user
             expect((response.body as Record<string, string>).id).toBe(data.id)
+        })
+        it('should not return the password field', async () => {
+            //Register user
+            const userData = {
+                firstName: 'Rikhta',
+                lastName: 'K',
+                email: 'rikhta@gmail.com',
+                password: 'secretPassword',
+            }
+            const userRepository = connection.getRepository(User)
+            const data = await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            })
+            //Generate token
+            const accessToken = jwks.token({
+                sub: String(data.id),
+                role: Roles.CUSTOMER,
+            })
+            //Add token to cookie
+            const response = await request(app)
+                .get('/auth/self')
+                .set('Cookie', [`accessToken=${accessToken};`])
+                .send()
+            //Assert
+            //Check if user id matches with registered user
+            expect(response.body as Record<string, string>).not.toHaveProperty(
+                'password',
+            )
         })
     })
 })
