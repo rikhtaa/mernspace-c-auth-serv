@@ -12,7 +12,7 @@ export interface RegisterUserRequest extends Request {
 export interface AuthRequest extends Request {
     auth: {
         sub: string
-        role: number
+        role: string
         id: string
     }
 }
@@ -33,4 +33,8 @@ export interface ITenant {
 
 export interface CreateTenantRequest extends Request {
     body: ITenant
+}
+
+export interface CreatUserRequest extends Request {
+    body: UserData
 }
