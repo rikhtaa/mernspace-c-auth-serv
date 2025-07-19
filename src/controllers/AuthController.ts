@@ -7,6 +7,7 @@ import { validationResult } from 'express-validator'
 import { TokenService } from '../services/TokenService'
 import createHttpError from 'http-errors'
 import { CredentailService } from '../services/CredentialService'
+import { User } from '../entity/User'
 
 export class AuthController {
     constructor(
@@ -15,6 +16,33 @@ export class AuthController {
         private tokenService: TokenService,
         private credentailService: CredentailService,
     ) {}
+    async persistTheRefreshToken(
+        res: Response,
+        payload: JwtPayload,
+        user: User,
+        accessToken: string | undefined,
+    ): Promise<void> {
+        const newRefreshToken =
+            await this.tokenService.persistRefreshToken(user)
+
+        const refreshToken = this.tokenService.generateRefreshToken({
+            ...payload,
+            id: String(newRefreshToken.id),
+        })
+
+        res.cookie('accessToken', accessToken, {
+            domain: 'localhost',
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60, //1hour
+            httpOnly: true, //important
+        })
+        res.cookie('refreshToken', refreshToken, {
+            domain: 'localhost',
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60 * 24 * 365, //1y
+            httpOnly: true, //important
+        })
+    }
     async register(
         req: RegisterUserRequest,
         res: Response,
@@ -51,24 +79,8 @@ export class AuthController {
             const accessToken = this.tokenService.generateAccessToken(payload)
 
             //Persist the refresh token
-            const newRefreshToken =
-                await this.tokenService.persistRefreshToken(user)
+            await this.persistTheRefreshToken(res, payload, user, accessToken)
 
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            })
-
-            res.cookie('accessToken', accessToken, {
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60, //1hour
-                httpOnly: true, //important
-            })
-            res.cookie('refreshToken', refreshToken, {
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1y
-                httpOnly: true, //important
-            })
             res.status(201).json({ id: user.id })
         } catch (err) {
             next(err)
@@ -125,26 +137,8 @@ export class AuthController {
             const accessToken = this.tokenService.generateAccessToken(payload)
 
             //Persist the refresh token
-            const newRefreshToken =
-                await this.tokenService.persistRefreshToken(user)
+            await this.persistTheRefreshToken(res, payload, user, accessToken)
 
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            })
-
-            res.cookie('accessToken', accessToken, {
-                domain: 'localhost',
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60, //1hour
-                httpOnly: true, //important
-            })
-            res.cookie('refreshToken', refreshToken, {
-                domain: 'localhost',
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1y
-                httpOnly: true, //important
-            })
             this.logger.info('user has been logged in', { id: user.id })
             res.json({ id: user.id })
         } catch (err) {
@@ -177,29 +171,10 @@ export class AuthController {
                 return
             }
 
-            const newRefreshToken =
-                await this.tokenService.persistRefreshToken(user)
-
             //Delete old refresh token
             await this.tokenService.deleteRefreshToken(Number(req.auth.id))
+            await this.persistTheRefreshToken(res, payload, user, accessToken)
 
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            })
-
-            res.cookie('accessToken', accessToken, {
-                domain: 'localhost',
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60, //1hour
-                httpOnly: true, //important
-            })
-            res.cookie('refreshToken', refreshToken, {
-                domain: 'localhost',
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1y
-                httpOnly: true, //important
-            })
             this.logger.info('user has been logged in', { id: user.id })
             res.json({ id: user.id })
 
