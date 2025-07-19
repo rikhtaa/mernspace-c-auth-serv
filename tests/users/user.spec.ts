@@ -10,9 +10,9 @@ describe('POST /auth/Login', () => {
     let connection: DataSource
     let jwks: ReturnType<typeof createJWKSMock>
     beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:5501')
         connection = await AppDataSource.initialize()
-    }, 10000)
+        jwks = createJWKSMock('http://localhost:5501')
+    })
 
     beforeEach(async () => {
         jwks.start()
@@ -34,6 +34,10 @@ describe('POST /auth/Login', () => {
                 .get('/auth/self')
                 .set('Cookie', [`accessToken=${accessToken}`])
                 .send()
+            console.log('Response Body:', response.body)
+            console.log('Response Status:', response.statusCode)
+            console.log('Response Headers:', response.headers)
+
             expect(response.statusCode).toBe(200)
         })
         it('should return the user data', async () => {
