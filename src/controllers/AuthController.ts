@@ -54,7 +54,7 @@ export class AuthController {
             return res.status(400).json({ errors: result.array() })
         }
 
-        const { firstName, lastName, email, password } = req.body
+        const { firstName, lastName, email, password, role } = req.body
 
         this.logger.debug('New request to register a user', {
             firstName,
@@ -68,6 +68,7 @@ export class AuthController {
                 lastName,
                 email,
                 password,
+                role,
             })
             this.logger.info('User has been registered', { id: user.id })
 
@@ -107,7 +108,7 @@ export class AuthController {
         //Return the response (id)
 
         try {
-            const user = await this.userService.findByEmail(email)
+            const user = await this.userService.findByEmailWithPassword(email)
             if (!user) {
                 const error = createHttpError(
                     400,

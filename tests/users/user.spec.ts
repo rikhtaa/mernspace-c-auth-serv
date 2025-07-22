@@ -34,9 +34,6 @@ describe('POST /auth/Login', () => {
                 .get('/auth/self')
                 .set('Cookie', [`accessToken=${accessToken}`])
                 .send()
-            console.log('Response Body:', response.body)
-            console.log('Response Status:', response.statusCode)
-            console.log('Response Headers:', response.headers)
 
             expect(response.statusCode).toBe(200)
         })
