@@ -16,6 +16,7 @@ export default tseslint.config(
             'scripts/convertPemToken.mjs',
             '*.spec.ts',
             'tests/',
+            'coverage/',
         ],
     },
     {
