@@ -31,11 +31,13 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
+                role: 'manager',
             }
             //Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
+
             //Assert
             expect(response.statusCode).toBe(201)
         })
@@ -64,6 +66,7 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
+                role: 'manager',
             }
 
             //Act
@@ -84,14 +87,20 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
+                role: 'manager',
             }
 
-            await request(app).post('/auth/register').send(userData)
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
 
             //Assert
+            expect(response.body).toHaveProperty('id')
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
-            expect(users[0].id).toBeDefined()
+            expect((response.body as Record<string, string>).id).toBe(
+                users[0].id,
+            )
         })
         it('should assign a customer role', async () => {
             //Arrange
@@ -100,6 +109,7 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
+                role: Roles.CUSTOMER,
             }
 
             //Act
@@ -109,7 +119,7 @@ describe('POST /auth/register', () => {
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
             expect(users[0]).toHaveProperty('role')
-            expect(users[0].role).toBe('customer')
+            expect(users[0].role).toBe(Roles.CUSTOMER)
         })
         it('should store the hashed password in the database', async () => {
             //Arrange
@@ -118,6 +128,7 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
+                role: Roles.CUSTOMER,
             }
 
             //Act
@@ -125,10 +136,10 @@ describe('POST /auth/register', () => {
 
             //Assert
             const userRepository = connection.getRepository(User)
-            const users = await userRepository.find()
+            const users = await userRepository.find({ select: ['password'] })
             expect(users[0].password).not.toBe(userData.password)
             expect(users[0].password).toHaveLength(60)
-            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+            expect(users[0].password).toMatch(/^\$2[a|b]\$\d+\$/)
         })
         it('should return 400 status code if email is already exists', async () => {
             //Arrange
@@ -159,6 +170,7 @@ describe('POST /auth/register', () => {
                 lastName: 'Menahil',
                 email: 'rekhta@gmail.com',
                 password: 'secretPassword',
+                role: Roles.CUSTOMER,
             }
 
             //Act
@@ -194,6 +206,7 @@ describe('POST /auth/register', () => {
                 lastName: 'Menahil',
                 email: 'rekhta@gmail.com',
                 password: 'secretPassword',
+                role: Roles.CUSTOMER,
             }
 
             //Act
@@ -344,6 +357,7 @@ describe('POST /auth/register', () => {
                 lastName: 'K',
                 email: ' rikhta@gmail.com ',
                 password: 'secretPassword',
+                role: Roles.MANAGER,
             }
 
             //Act
