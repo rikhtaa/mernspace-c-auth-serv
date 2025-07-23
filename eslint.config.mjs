@@ -14,6 +14,8 @@ export default tseslint.config(
             'jest.config.js',
             'scripts/generateKeys.mjs',
             'scripts/convertPemToken.mjs',
+            '*.spec.ts',
+            'tests/',
         ],
     },
     {
@@ -24,7 +26,7 @@ export default tseslint.config(
             },
         },
         rules: {
-            // 'no-console':'error',
+            'no-console':'error',
             // 'dot-notation': 'error',
         },
     },
