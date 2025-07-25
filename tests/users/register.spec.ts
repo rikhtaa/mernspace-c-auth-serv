@@ -369,5 +369,24 @@ describe('POST /auth/register', () => {
             const user = users[0]
             expect(user.email).toBe('rikhta@gmail.com')
         })
+        it('shoud return an array of error messages if email is missing', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: '',
+                password: 'password',
+            }
+            // Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+
+            // Assert
+            expect(response.body).toHaveProperty('errors')
+            expect(
+                (response.body as Record<string, string>).errors.length,
+            ).toBeGreaterThan(0)
+        })
     })
 })
