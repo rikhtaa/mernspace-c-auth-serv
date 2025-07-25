@@ -6,7 +6,7 @@ import createJWKSMock from 'mock-jwks'
 import { Roles } from '../../src/constants'
 import { User } from '../../src/entity/User'
 
-describe('POST /auth/Login', () => {
+describe('POST /auth/self', () => {
     let connection: DataSource
     let jwks: ReturnType<typeof createJWKSMock>
     beforeAll(async () => {
