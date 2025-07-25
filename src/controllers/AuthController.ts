@@ -11,10 +11,10 @@ import { User } from '../entity/User'
 
 export class AuthController {
     constructor(
-        private userService: UserService,
-        private logger: Logger,
-        private tokenService: TokenService,
-        private credentailService: CredentailService,
+        private readonly userService: UserService,
+        private readonly logger: Logger,
+        private readonly tokenService: TokenService,
+        private readonly credentailService: CredentailService,
     ) {}
     async persistTheRefreshToken(
         res: Response,
