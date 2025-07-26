@@ -6,7 +6,7 @@ export default checkSchema(
             trim: true,
             customSanitizer: {
                 options: (value: unknown) => {
-                    return value ? value : ''
+                    return value || ''
                 },
             },
         },
