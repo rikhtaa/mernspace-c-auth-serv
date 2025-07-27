@@ -15,7 +15,7 @@
         "test:watch": "jest --watch --runInBand",
         "prepare": "husky",
         "start": "ts-node src/index.ts",
-        "migration:generate": "typeorm-ts-node-commonjs migration:generate", 
+        "migration:generate": "typeorm-ts-node-commonjs migration:generate",
         "migration:run": "typeorm-ts-node-commonjs migration:run",
         "migration:create": "typeorm-ts-node-commonjs migration:create"
     },
@@ -53,7 +53,7 @@
         ]
     },
     "dependencies": {
-        "bcrypt": "^6.0.0",
+        "bcryptjs": "^3.0.2",
         "cookie-parser": "^1.4.7",
         "dotenv": "^16.5.0",
         "express": "^5.1.0",
