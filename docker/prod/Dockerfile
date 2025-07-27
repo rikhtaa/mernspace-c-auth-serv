@@ -22,7 +22,7 @@ RUN npm ci --ignore-scripts
 
 COPY --from=builder /app/dist ./
 
-EXPOSE 5500
+EXPOSE 5500 
 
-CMD ["node", "src/server.js"]
+CMD ["node", "server.js"]
 
