@@ -6,21 +6,20 @@ export default checkSchema(
             trim: true,
             customSanitizer: {
                 options: (value: unknown) => {
-                    return value ? value : ''
+                    return value || ''
                 },
             },
         },
         role: {
             customSanitizer: {
                 options: (value: unknown) => {
-                    return value ? value : ''
+                    return value || ''
                 },
             },
         },
         currentPage: {
             customSanitizer: {
                 options: (value) => {
-                    // 2, '2', undefined, 'sdlkfkjds' -> NaN
                     const parsedValue = Number(value)
                     return Number.isNaN(parsedValue) ? 1 : parsedValue
                 },
@@ -29,7 +28,6 @@ export default checkSchema(
         perPage: {
             customSanitizer: {
                 options: (value) => {
-                    // 2, '2', undefined, 'sdlkfkjds' -> NaN
                     const parsedValue = Number(value)
                     return Number.isNaN(parsedValue) ? 6 : parsedValue
                 },
