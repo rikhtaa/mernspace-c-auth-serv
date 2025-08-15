@@ -24,6 +24,14 @@ export default checkSchema({
             errorMessage: 'Password should be at least 8 chars',
         },
     },
+    role: {
+        notEmpty: true,
+        errorMessage: 'Role is required!',
+    },
+    tenantId: {
+        optional: true,
+        isInt: {
+            errorMessage: 'Tenant ID must be an integer',
+        },
+    },
 })
-
-// export default [body('email').notEmpty().withMessage("Email is required!")]

@@ -54,7 +54,8 @@ export class AuthController {
             return res.status(400).json({ errors: result.array() })
         }
 
-        const { firstName, lastName, email, password, role } = req.body
+        const { firstName, lastName, email, password, role, tenantId } =
+            req.body
 
         this.logger.debug('New request to register a user', {
             firstName,
@@ -69,12 +70,17 @@ export class AuthController {
                 email,
                 password,
                 role,
+                tenantId,
             })
             this.logger.info('User has been registered', { id: user.id })
 
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                tenant: user.tenant ? String(user.tenant.id) : '',
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
             }
 
             const accessToken = this.tokenService.generateAccessToken(payload)

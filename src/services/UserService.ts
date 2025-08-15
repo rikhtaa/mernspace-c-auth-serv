@@ -30,7 +30,7 @@ export class UserService {
                 email,
                 password: hashedPassword,
                 role,
-                tenantId: tenantId ? { id: tenantId } : undefined,
+                tenant: tenantId ? { id: Number(tenantId) } : undefined,
             })
         } catch {
             const error = createHttpError(
