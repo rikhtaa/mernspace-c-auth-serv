@@ -56,7 +56,7 @@ export class TenantController {
                 currentPage: validatedQuery.currentPage as number,
                 perPage: validatedQuery.perPage as number,
                 total: count,
-                datat: tenants,
+                data: tenants,
             })
             res.json(tenants)
         } catch (err) {
