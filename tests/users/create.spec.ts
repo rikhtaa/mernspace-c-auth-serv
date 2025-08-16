@@ -65,7 +65,7 @@ describe('POST /users', () => {
                 email: 'rikhta@gmail.com',
                 password: 'secretPassword',
                 role: Roles.MANAGER,
-                tenantId: 1,
+                tenant: 1,
             }
             //Generate token
             const adminToken = jwks.token({
