@@ -17,8 +17,8 @@ export class Tenant {
     @Column('varchar', { length: 255 })
     address: string
     @UpdateDateColumn()
-    updatedAt: number
+    updatedAt: Date
 
     @CreateDateColumn()
-    createAt: number
+    createdAt: Date
 }
