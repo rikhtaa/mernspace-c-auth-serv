@@ -1,14 +1,13 @@
 import 'reflect-metadata'
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import { HttpError } from 'http-errors'
-import logger from './config/logger'
 import authRouter from './routes/auth'
 import tenantRouter from './routes/tenant'
 import userRouter from './routes/user'
 import { Config } from './config'
 import path from 'path'
+import { globalErrorHandler } from './middlewares/globalErrorHandler'
 const app = express()
 app.use(
     cors({
@@ -20,38 +19,18 @@ app.use(express.static('public'))
 app.use(cookieParser())
 app.use(express.json())
 app.get('/', (req, res) => {
-    // throw err
     res.send('Welcome to auth service')
 })
 
 app.use('/auth', authRouter)
 app.use('/tenants', tenantRouter)
 app.use('/users', userRouter)
+app.use(globalErrorHandler)
 
 app.use(
     express.static(path.join(__dirname, '../public'), {
         dotfiles: 'allow',
     }),
 )
-
-//global error handler
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    logger.error(err.message)
-    const statusCode = err.statusCode || err.status || 500
-
-    res.status(statusCode).json({
-        errors: [
-            {
-                type: err.name,
-                msg: err.message,
-                path: '',
-                location: '',
-            },
-        ],
-    })
-
-    //   return
-})
 
 export default app

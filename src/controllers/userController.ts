@@ -41,7 +41,7 @@ export class UserController {
     async update(req: UpdateUserRequest, res: Response, next: NextFunction) {
         const result = validationResult(req)
         if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() })
+            return next(createHttpError(400, result.array()[0].msg as string))
         }
 
         const { firstName, lastName, role, email, tenantId } = req.body
